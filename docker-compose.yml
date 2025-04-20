@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres-shared-db:
+    image: postgres
+    restart: always
+    container_name: postgres-shared-db
+    volumes:
+      - pgdata-shared:/var/lib/postgresql/data
+      - ./shared-db/init-scripts:/docker-entrypoint-initdb.d 
+    env_file: ./shared-db/.env
+    networks:
+      - wso2-network
+    ports:  
+      - "5455:5432"
+  identity-db:
+    image: postgres
+    restart: always
+    container_name: postgres-identity-db
+    volumes:
+      - pgdata-identity:/var/lib/postgresql/data
+      - ./identity-db/init-scripts:/docker-entrypoint-initdb.d 
+    env_file: ./identity-db/.env
+    networks:
+      - wso2-network
+    ports:  
+      - "5456:5432"
+
+networks:
+  wso2-network:
+    driver: bridge
+    external: true
+volumes:
+  pgdata-identity:
+  pgdata-shared:
